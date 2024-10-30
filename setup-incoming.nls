@@ -1,0 +1,17 @@
+to setup-incoming
+  if random 100 < concurrencia [
+    create-turtles 1 [
+      ;; Coordenadas iniciales dentro de la región especificada
+      ;;let initial-xcor ((random (slideX + (world-width - 1) / 2)) - (world-width - 1) / 2)
+      ;let initial-ycor ((random (slideY + (world-height - 1) / 2)) - (world-height - 1) / 2)
+      let initial-xcor (random world-width - (world-width / 2))
+      let initial-ycor (random (1 + slideY + 32) - 32)
+
+      setxy initial-xcor initial-ycor
+
+      set energy initial-energy
+      set viral random 100
+      set color black  
+    ]
+  ]
+end

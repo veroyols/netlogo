@@ -1,0 +1,30 @@
+
+to setup-room ;; Procedimiento para configurar el entorno
+  ;; Región superior izquierda
+  ask patches with [pxcor < slideX and pycor >= slideY] [
+    set pcolor brown
+  ]
+
+  ;; Región superior derecha
+  ask patches with [pxcor >= slideX and pycor >= slideY] [
+    set pcolor white
+  ]
+
+  ;; Región inferior izquierda
+  ask patches with [pxcor < slideX and pycor < slideY] [
+    set pcolor white
+  ]
+
+  ;; Región inferior derecha
+  ask patches with [pxcor >= slideX and pycor < slideY] [
+    set pcolor brown
+  ]
+  
+  ;; Distribuir virus
+  ask patches [
+    if random 100 < virus-prob [  ;; virus-prob debería ser un valor previamente definido, como 10
+      set pcolor red
+    ]
+  ]
+  
+end

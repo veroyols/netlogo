@@ -1,0 +1,14 @@
+to move-to-triaje
+  if any? turtles [
+    let min-energy min [energy] of turtles
+    let turtle-to-move one-of turtles with [energy = min-energy]
+    
+    ;; Mueve la tortuga a un nuevo cuadrante
+    let triaje-xcor (random (- world-width / 2))
+    let triaje-ycor (random (world-height / 2))
+    
+    ask turtle-to-move [
+      setxy triaje-xcor triaje-ycor
+    ]
+  ]
+end

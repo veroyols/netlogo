@@ -1,0 +1,26 @@
+to move-turtles
+  ask turtles with [xcor < slideX and ycor < slideY] [
+    right random 360
+    forward 1
+    set energy energy - 0.1
+
+    ;; Incrementar la carga viral si está sobre un parche de virus (rojo)
+    if pcolor = red [
+      set viral viral + random-float 0.5  ;; Aumenta ligeramente la carga viral
+    ]
+    
+    ;; Verificar y ajustar la posición si la tortuga sale del cuadrante
+    if pxcor >= slideX [
+      set xcor (slideX - 1)
+    ]
+    if pxcor < (- world-width / 2) [
+      set xcor (- world-width / 2)
+    ]
+    if pycor >= slideY [
+      set ycor (slideY - 1)
+    ]
+    if pycor < (- world-height / 2) [
+      set ycor (- world-height / 2)
+    ]
+  ]
+end
