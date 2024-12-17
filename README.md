@@ -28,7 +28,7 @@ Se implementó un modelo simplificado de flujo de pacientes en una sala de guard
    - Los pacientes llegan al triaje después de cierto número de `ticks`.
    - Se clasifican en **crítico**, **urgente** o **moderado** según su condición de salud.
 
-![Simulación en NetLogo]([https://raw.githubusercontent.com/veroyols/netlogo/main/netlogo.png])
+![Imagen de la simulación en NetLogo](https://github.com/veroyols/netlogo/blob/main/netlogo.png)
 
 ---
 
