@@ -24,3 +24,16 @@ to move-turtles
     ]
   ]
 end
+
+to move-all-turtles
+  ask turtles [
+    right random 360
+    forward 1
+    set energy energy - 0.1
+
+    ;; Incrementar la carga viral si está sobre un parche de virus (rojo)
+    if pcolor = red [
+      set viral viral + random-float 0.5  ;; Aumenta ligeramente la carga viral
+    ]
+  ]
+end

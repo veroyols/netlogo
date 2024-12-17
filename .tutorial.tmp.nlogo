@@ -1,51 +1,70 @@
-__includes ["setup-draw.nls" "setup-incoming.nls" "move-turtles.nls" "move-to-triaje.nls"]
-turtles-own [energy viral]
+__includes []
+turtles-own [energy]
+
 
 to setup
   clear-all
-
-  setup-draw
+  setup-room slideX slideY
+  ;;setup-patches
+  setup-turtles
   reset-ticks
 end
 
+to setup-patches
+  ask patches [ set pcolor black ]
+end
+
+to setup-turtles
+  create-turtles number
+  ask turtles [
+    setxy random slideX random slideY
+    set energy 10
+  ]
+end
+
+
+
+
 to go
   if ticks >= max-tick [ stop ]
-  setup-incoming
-  move-all-turtles
-  text
-  update-health  ;; Actualiza energía y carga viral al contacto con el virus
-  if ticks mod time_triaje = 0 [
-    move-to-triaje
-  ]
+  move-turtles
+  eat-grass
+  reproduce
+  check-death
+  regrow-grass
   tick
 end
 
-to text
+to move-turtles
   ask turtles [
-    if ticks mod time_triaje = 0 [
-      if show-energy? [
-        set label (word "E: " round energy ", V: " round viral)
-        set label-color black
+    right random 360
+    forward 1
+    set energy energy - 1
+  ]
+end
+
+to eat-grass
+  ask turtles [
+    if pcolor = green [
+      set pcolor black
+      set energy (energy + energy-from-grass)
+    ]
+    ifelse show-energy?
+    [ set label energy ]
+    [ set label "" ]
+  ]
+end
+
+to reproduce
+  ask turtles [
+    if energy > 50 [
+      set energy (energy - birth-energy)
+      hatch clone [
+        set energy birth-energy
       ]
     ]
-    ;; Si no se actualiza, mantén el texto anterior
   ]
 end
-
-
-
-to update-health
-  ask turtles [
-    ;; Disminuye la energía en cada tick
-    set energy energy - 0.5
-
-    ;; Incrementa la carga viral solo si está sobre un parche de virus (rojo)
-    if pcolor = red [
-      set viral viral + random-float 0.5  ;; aumenta ligeramente la carga viral
-    ]
-  ]
-end
-
 
 to check-death
   ask turtles [
@@ -55,35 +74,35 @@ to check-death
   ]
 end
 
-to regrow-virus
+to regrow-grass
   ask patches [
-    if random 100 < 2 [
-      set pcolor red
+    if  random 100 < 2 [
+      set pcolor green
     ]
   ]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-339
+325
 10
-828
-500
+1339
+526
 -1
 -1
-7.4
+7.8
 1
 10
 1
 1
 1
 0
-0
-0
 1
--32
-32
--32
-32
+1
+1
+0
+128
+0
+64
 1
 1
 1
@@ -126,111 +145,111 @@ NIL
 
 MONITOR
 0
-226
-109
-271
-Pacientes en espera
-count turtles with [pxcor < slideX and pycor < slideY]
-0
+331
+84
+376
+NIL
+count turtles
+17
 1
 11
 
 MONITOR
-242
-226
-326
-271
-red  patches
-count patches with [pcolor = red]
-0
+87
+331
+171
+376
+green patches
+count patches with [pcolor = green]
+17
 1
 11
 
 SWITCH
 0
-69
-129
-102
+52
+133
+85
 show-energy?
 show-energy?
-0
+1
 1
 -1000
 
 PLOT
 0
-277
+376
 325
-499
+526
 Totals
 time
 totals
 0.0
 10.0
 0.0
-200.0
+10.0
 true
 false
 "" ""
 PENS
-"espera" 1.0 0 -14070903 true "" "plot count turtles with [pxcor < slideX and pycor < slideY]"
-"triaje" 1.0 0 -10899396 true "" "plot count turtles with [pxcor < slideX and pycor > slideY]"
+"turtles" 1.0 0 -2674135 true "" "plot count turtles"
+"grass" 1.0 0 -10899396 true "" "plot count patches with [pcolor = green]"
 
 SLIDER
-1172
-277
-1344
-310
+143
+10
+315
+43
 number
 number
 1
 1000
-1.0
+90.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-1172
-312
-1344
-345
+143
+44
+315
+77
 energy-from-grass
 energy-from-grass
 1
 100
-1.0
+11.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-1172
-380
-1344
-413
+143
+112
+315
+145
 birth-energy
 birth-energy
 1
 100
-1.0
+25.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-1172
-346
-1344
-379
+143
+78
+315
+111
 clone
 clone
 1
 10
-1.0
+3.0
 1
 1
 NIL
@@ -238,119 +257,48 @@ HORIZONTAL
 
 SLIDER
 0
-109
+88
 128
-142
+121
 max-tick
 max-tick
 100
 10000
-10000.0
+1420.0
 10
 1
 NIL
 HORIZONTAL
 
 SLIDER
-176
-110
-327
-143
+0
+160
+130
+193
 slideX
 slideX
-- (world-height - 1) / 2
-world-height / 2
-0.0
+0
+64
+64.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-136
-11
-169
-143
+0
+123
+132
+156
 slideY
 slideY
-- (world-width - 1) / 2
-(world-width - 1) / 2
--20.0
-1
-1
-NIL
-VERTICAL
-
-SLIDER
-176
-62
-327
-95
-concurrencia
-concurrencia
 0
-50
-50.0
+32
+32.0
 1
 1
 NIL
 HORIZONTAL
-
-SLIDER
-0
-149
-327
-182
-virus-prob
-virus-prob
-0
-50
-4.9
-0.1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-0
-187
-327
-220
-initial-energy
-initial-energy
-0
-1000
-1000.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-176
-13
-328
-46
-time_triaje
-time_triaje
-10
-1000
-70.0
-10
-1
-NIL
-HORIZONTAL
-
-MONITOR
-118
-226
-234
-271
-Pacientes en triaje
-count turtles with [pxcor < slideX and pycor > slideY]
-17
-1
-11
 
 @#$#@#$#@
 ## WHAT IS IT?

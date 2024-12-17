@@ -1,0 +1,64 @@
+to setup-draw
+  setup-reception
+  setup-rooms
+  setup-border
+  setup-virus-room
+  ;setup-hallway
+end
+
+
+to setup-reception
+  ask patches with [pycor >= -32 and pycor <= slideY] [
+    set pcolor white
+  ]
+end
+
+to setup-rooms
+  ;; Calcula el tamaño de las habitaciones según slideX
+  let left-room-width (slideX - 5)   ;; Ancho de la habitación izquierda
+  let right-room-width (32 - (slideX + 5))  ;; Ancho de la habitación derecha
+
+  ;; Configura las habitaciones en el lado izquierdo
+  ask patches with [pxcor >= -32 and pxcor <= left-room-width and pycor >= (slideY + 1) and pycor <= 32] [
+    if pycor <= slideY + ((32 - slideY) / 2) [  ;; Habitación izquierda inferior
+      set pcolor white
+    ]
+    if pycor > slideY + ((32 - slideY) / 2) [   ;; Habitación izquierda superior
+      set pcolor gray
+    ]
+  ]
+  
+  ;; Configura las habitaciones en el lado derecho
+  ask patches with [pxcor >= (left-room-width + 5) and pxcor <= 32 and pycor >= (slideY + 1) and pycor <= 32] [
+    if pycor <= slideY + ((32 - slideY) / 2) [  ;; Habitación derecha inferior
+      set pcolor gray
+    ]
+    if pycor > slideY + ((32 - slideY) / 2) [   ;; Habitación derecha superior
+      set pcolor white
+    ]
+  ]
+end
+
+to setup-border
+  ask patches with [pxcor = -32 or pxcor = 32 or pycor = -32 or pycor = slideY or pycor = 32] [
+    set pcolor black
+  ]
+  ask patches with [pycor = (32 - slideY) / 2 +  slideY] [
+    set pcolor black
+  ]
+end
+
+to setup-hallway
+  ;; Configura el pasillo vertical que conecta la recepción con las habitaciones
+  ask patches with [pxcor >= (slideX - 5) and pxcor <= (slideX) and pycor >= (slideY) and pycor <= 31] [
+    set pcolor gray
+  ]
+end
+
+to setup-virus-room
+  ask patches [
+    if random 100 < virus-prob [  ;; virus-prob debería ser un valor previamente definido, como 10
+      set pcolor red
+    ]
+  ]
+end
